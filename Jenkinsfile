@@ -15,8 +15,7 @@ pipeline {
    stages {
       stage('Test') {
          steps {
-            sh 'python3 -m venv env'
-            sh 'source ./env/bin/activate'
+            sh 'chmod -R a+rw ./local'
             sh 'python3 -m pip install --user -r requirements.txt'
             dir('frontend') {
                sh "flake8"
