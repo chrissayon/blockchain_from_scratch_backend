@@ -9,16 +9,19 @@ void setBuildStatus(String message, String state) {
 }
 
 pipeline {
-   agent { docker { image 'python:3.7.2' } }
+   // agent { docker { image 'python:3.7.2' } }
+   agent any
 
    stages {
       stage('Test') {
          steps {
-               dir('frontend')
+            sh 'pip install --user -r requirements.txt'
+            dir('frontend') {
                sh "flake8"
             }
-         }  
-      }
+         }
+      }  
+   }
    post {
       success {
          setBuildStatus("Build succeeded", "SUCCESS");
