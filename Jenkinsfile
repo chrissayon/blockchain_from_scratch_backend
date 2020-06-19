@@ -9,7 +9,7 @@ void setBuildStatus(String message, String state) {
 }
 
 pipeline {
-   agent { docker { image 'python:3.7.2' } }
+   agent { docker { image 'geerlingguy/docker-ubuntu1804-ansible' } }
    // agent any
 
    stages {
