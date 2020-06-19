@@ -15,7 +15,7 @@ pipeline {
    stages {
       stage('Test') {
          steps {
-            sh 'python -m pip install --user -r requirements.txt'
+            sh 'python3 -m pip install --user -r requirements.txt'
             dir('frontend') {
                sh "flake8"
             }
