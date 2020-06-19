@@ -9,14 +9,12 @@ void setBuildStatus(String message, String state) {
 }
 
 pipeline {
-   agent { docker { image 'geerlingguy/docker-ubuntu1804-ansible' } }
+   agent { docker { image 'chrissayon/flask_ansible' } }
    // agent any
 
    stages {
       stage('Test') {
          steps {
-            sh 'chmod -R a+rw ./local'
-            sh 'python3 -m pip install --user -r requirements.txt'
             dir('frontend') {
                sh "flake8"
             }
