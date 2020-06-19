@@ -8,9 +8,12 @@ pipeline {
          }
       }
       
-      stage('Set git build status') {
-         steps {
-            step([$class: 'GitHubCommitStatusSetter'])
+      post {
+         success {
+            setBuildStatus("Build succeeded", "SUCCESS");
+         }
+         failure {
+            setBuildStatus("Build failed", "FAILURE");
          }
       }
    }
