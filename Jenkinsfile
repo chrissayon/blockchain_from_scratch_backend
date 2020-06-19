@@ -10,10 +10,12 @@ void setBuildStatus(String message, String state) {
 
 pipeline {
   stages {
-     steps {
+     stage('Test') {
+        steps {
             echo 'Hello World'
-      }
-  }
+         }
+      }  
+   }
   post {
     success {
         setBuildStatus("Build succeeded", "SUCCESS");
