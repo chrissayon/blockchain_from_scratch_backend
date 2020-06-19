@@ -9,13 +9,13 @@ void setBuildStatus(String message, String state) {
 }
 
 pipeline {
-   // agent { docker { image 'python:3.7.2' } }
-   agent any
+   agent { docker { image 'python:3.7.2' } }
+   // agent any
 
    stages {
       stage('Test') {
          steps {
-            sh 'pip install --user -r requirements.txt'
+            // sh 'pip install --user -r requirements.txt'
             dir('frontend') {
                sh "flake8"
             }
