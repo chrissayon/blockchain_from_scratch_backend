@@ -9,12 +9,14 @@ void setBuildStatus(String message, String state) {
 }
 
 pipeline {
-   agent { docker { image 'geerlingguy/docker-ubuntu1804-ansible' } }
+   agent { docker { image 'python:3.7.2' } }
    // agent any
 
    stages {
       stage('Test') {
          steps {
+            sh 'python3 -m venv env'
+            sh 'source ./env/bin/activate'
             sh 'python3 -m pip install --user -r requirements.txt'
             dir('frontend') {
                sh "flake8"
