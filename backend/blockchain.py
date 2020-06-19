@@ -29,10 +29,4 @@ blockchain = Blockchain()
 blockchain.add_block('one')
 blockchain.add_block('two')
 
-
-
-
-
-
-
 print(blockchain)
