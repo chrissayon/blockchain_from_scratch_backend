@@ -8,10 +8,9 @@ pipeline {
          }
       }
       
-      stage('Hello2') {
+      stage('Set git build status') {
          steps {
-            echo 'Hello World2'
-            echo 'Hello World3'
+            step([$class: 'GitHubCommitStatusSetter'])
          }
       }
    }
