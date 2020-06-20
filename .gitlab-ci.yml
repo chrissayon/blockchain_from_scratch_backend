@@ -9,4 +9,4 @@ build_a:
   stage: test
   script:
     - cd backend
-    - flake 8
+    - flake8
