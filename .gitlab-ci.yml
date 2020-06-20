@@ -1,0 +1,12 @@
+stages:
+  - test
+  - deploy
+
+image: chrissayon/flask_ansible:1.0
+
+# Check python syntax
+build_a:
+  stage: test
+  script:
+    - cd backend
+    - flake 8
