@@ -34,7 +34,7 @@ class Block:
         """
         Mine a block based on the given last_block and data.
         """
-        timestamp = time.time_ns()
+        timestamp = time.time()
         last_hash = last_block.hash
         hash = crypto_hash(timestamp, last_hash, data)
 
