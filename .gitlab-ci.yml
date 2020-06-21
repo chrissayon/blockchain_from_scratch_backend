@@ -2,7 +2,7 @@ stages:
   - test
   - deploy
 
-image: chrissayon/python_flask:0.1
+image: chrissayon/python3.7_alpine
 
 # Check python syntax
 code_quality:

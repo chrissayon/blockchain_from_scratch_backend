@@ -1,10 +1,5 @@
 # Use the official image as a parent image.
-FROM ubuntu:bionic
-
-# Install python
-RUN apt-get update
-RUN apt-get -y install python3.7 python3-pip
-# Next version do: apt-get -y install python3-pip  python3.7-dev
+FROM python:3.7-alpine3.9
 
 # Set the working directory.
 WORKDIR /home
@@ -13,5 +8,13 @@ WORKDIR /home
 COPY requirements.txt requirements.txt
 
 # Run the command inside your image filesystem.
-RUN pip3 install wheel
-RUN pip3 install -r requirements.txt
+RUN pip install --upgrade pip
+RUN pip install wheel
+
+RUN apk update 
+RUN apk add gcc musl-dev libffi-dev openssl-dev
+# RUN apk add --no-cache --virtual .build-deps gcc musl-dev \
+#     && pip install cython \
+#     && apk del .build-deps gcc musl-dev
+
+RUN pip install -r requirements.txt
