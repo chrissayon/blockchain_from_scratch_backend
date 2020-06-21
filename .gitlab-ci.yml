@@ -10,3 +10,9 @@ code_quality:
   script:
     - cd backend
     - flake8
+
+unit_testing:
+  stage: test
+  script:
+    - cd backend
+    - python3 -m pytest backend/tests

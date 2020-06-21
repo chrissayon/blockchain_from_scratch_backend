@@ -1,2 +1,5 @@
-# blockchain_from_scratch
-Blockchain project from scratch
+## Tests
+'''
+flake8
+python3 -m pytest backend/tests
+'''
