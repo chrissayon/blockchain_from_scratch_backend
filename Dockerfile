@@ -1,7 +1,10 @@
 # Use the official image as a parent image.
-FROM geerlingguy/docker-ubuntu1804-ansible
+FROM ubuntu:bionic
 
-USER root
+# Install python
+RUN apt-get update
+RUN apt-get -y install python3.7 python3-pip
+# Next version do: apt-get -y install python3-pip  python3.7-dev
 
 # Set the working directory.
 WORKDIR /home

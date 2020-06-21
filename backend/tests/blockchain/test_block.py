@@ -36,7 +36,7 @@ def test_quickly_mined_block():
 
 
 def test_slowly_mined_block():
-    last_block = Block.mine_block(Block.genesis(), 'foo')    
+    last_block = Block.mine_block(Block.genesis(), 'foo')
     time.sleep(MINE_RATE / SECONDS)
     mined_block = Block.mine_block(last_block, 'bar')
 
