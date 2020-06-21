@@ -14,5 +14,4 @@ code_quality:
 unit_testing:
   stage: test
   script:
-    - cd backend
-    - python3 -m pytest backend/tests
+    - python -m pytest backend/tests
