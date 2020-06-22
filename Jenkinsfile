@@ -9,7 +9,7 @@ void setBuildStatus(String message, String state) {
 }
 
 pipeline {
-   agent { docker { image 'chrissayon/flask_ansible:1.0' } }
+   agent { docker { image 'chrissayon/python3.7_alpine:0.1' } }
    // agent any
 
    stages {
