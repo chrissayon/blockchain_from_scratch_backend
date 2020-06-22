@@ -17,8 +17,8 @@ pipeline {
          steps {
             dir('backend') {
                sh "flake8 --max-line-length=90"
-               sh "python3 -m pytest tests"
             }
+            sh "python3 -m pytest backend/tests"
          }
       }  
    }
