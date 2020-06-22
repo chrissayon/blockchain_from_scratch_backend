@@ -15,8 +15,9 @@ pipeline {
    stages {
       stage('Test') {
          steps {
-            dir('frontend') {
+            dir('backend') {
                sh "flake8"
+               sh "pytest backend/tests"
             }
          }
       }  

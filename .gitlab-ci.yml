@@ -2,11 +2,16 @@ stages:
   - test
   - deploy
 
-image: chrissayon/flask_ansible:1.0
+image: chrissayon/python3.7_alpine:0.1
 
 # Check python syntax
-build_a:
+code_quality:
   stage: test
   script:
     - cd backend
-    - flake8
+    - flake8 --max-line-length=90
+
+unit_testing:
+  stage: test
+  script:
+    - python3 -m pytest backend/tests
