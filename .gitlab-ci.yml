@@ -4,7 +4,7 @@ stages:
 
 image: chrissayon/flask_ansible:0.1
 
-# testing
+# testings
 # Check python syntax
 code_quality:
   stage: test
