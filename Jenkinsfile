@@ -9,14 +9,14 @@ void setBuildStatus(String message, String state) {
 }
 
 pipeline {
-   agent { docker { image 'chrissayon/python3.7_alpine:0.1' } }
+   agent { docker { image 'chrissayon/flask_ansible:0.1' } }
    // agent any
 
    stages {
       stage('Test') {
          steps {
             dir('backend') {
-               sh "flake8"
+               sh "flake8 --max-line-length=90"
                sh "pytest backend/tests"
             }
          }
