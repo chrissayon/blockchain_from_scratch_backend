@@ -10,7 +10,7 @@ void setBuildStatus(String message, String state) {
 
 pipeline {
    agent { docker { image 'chrissayon/flask_ansible:0.1' } }
-   // agent any
+   // agent any yes
 
    stages {
       stage('Test') {
