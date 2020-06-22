@@ -6,6 +6,7 @@ WORKDIR /home
 
 # Copy the file from your host to your current location.
 COPY requirements.txt requirements.txt
+COPY . .
 
 # Run the command inside your image filesystem.
 RUN pip install --upgrade pip

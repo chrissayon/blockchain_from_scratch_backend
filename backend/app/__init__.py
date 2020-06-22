@@ -20,4 +20,4 @@ def route_blockchain():
     return blockchain.__repr__()
 
 
-app.run()
+app.run(host='0.0.0.0')
