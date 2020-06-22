@@ -10,7 +10,11 @@ pnconfig = PNConfiguration()
 pnconfig.publish_key = os.environ.get('pubnub_publish_key')
 pnconfig.subscribe_key = os.environ.get('pubnub_subscribe_key')
 
-TEST_CHANNEL = 'TEST_CHANNEL'
+
+CHANNELS = {
+    'TEST': 'TEST',
+    'BLOCK': 'BLOCK'
+}
 
 
 class Listener(SubscribeCallback):
@@ -28,7 +32,7 @@ class PubSub():
         self.pubnub = PubNub(pnconfig)
 
         # Tells that pubnub is now subscribed to all designated channels
-        self.pubnub.subscribe().channels([TEST_CHANNEL]).execute()
+        self.pubnub.subscribe().channels(CHANNELS.values()).execute()
 
         # Deals with what happens when packet received
         self.pubnub.add_listener(Listener())
@@ -39,6 +43,12 @@ class PubSub():
         """
         self.pubnub.publish().channel(channel).message(message).sync()
 
+    def broadcast_block(self, block):
+        """
+        Broadcast a block object to all nodes.
+        """
+        self.publish(CHANNELS['BLOCK'], block.to_json())
+
 
 # We need to overwrite channel to publish to
 def main():
@@ -46,7 +56,7 @@ def main():
 
     time.sleep(1)
 
-    pubsub.publish(TEST_CHANNEL, {'foo': 'bar'})
+    pubsub.publish(CHANNELS['TEST'], {'foo': 'bar'})
 
 
 if __name__ == '__main__':
