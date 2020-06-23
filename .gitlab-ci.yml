@@ -12,7 +12,6 @@ code_quality:
     - cd backend
     - flake8 --max-line-length=90
 
-    
 # Unit testing
 unit_testing:
   stage: test
@@ -20,21 +19,27 @@ unit_testing:
   script:
     - python3 -m pytest backend/tests
 
-# dev_server:
-#   stage: test
-#   image: registry.gitlab.com/gitlab-org/cloud-deploy/aws-base:latest
-#   script: 
-#     - 
-
-# test:
-#   stage: test
-#   script: ./test
-#   only:
-#   - merge_requests
-
-deploy:
+deploy_dev:
   stage: deploy
-  script: aws cloudformation create-stack --stack-name ec2 --template-body file://ec2.yml
+  image: registry.gitlab.com/gitlab-org/cloud-deploy/aws-base:latest
+  script: aws cloudformation create-stack --stack-name ec2 --template dev.yml
+
+deploy_staging:
+  stage: deploy
+  image: registry.gitlab.com/gitlab-org/cloud-deploy/aws-base:latest
+  script: aws cloudformation create-stack --stack-name ec2 --template stage.yml
   when: manual
+  environment:
+    name: staging
+  only:
+  - merge_requests
+
+deploy_prod:
+  stage: deploy
+  image: registry.gitlab.com/gitlab-org/cloud-deploy/aws-base:latest
+  script: aws cloudformation create-stack --stack-name ec2 --template prod.yml
+  when: manual
+  environment:
+    name: production
   only:
   - master
