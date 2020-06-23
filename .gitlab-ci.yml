@@ -4,7 +4,7 @@ stages:
   - staging
   - deploy
 
-image: chrissayon/flask_ansible:0.1
+image: chrissayon/flask_ansible:0.2
 
 
 # Check python syntax
