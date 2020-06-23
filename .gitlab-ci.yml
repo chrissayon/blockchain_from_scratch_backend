@@ -19,6 +19,7 @@ unit_testing:
   script:
     - python3 -m pytest backend/tests
 
+# Deploy dev environment
 deploy_dev:
   stage: deploy
   image: registry.gitlab.com/gitlab-org/cloud-deploy/aws-base:latest
