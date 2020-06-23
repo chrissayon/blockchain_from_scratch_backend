@@ -4,9 +4,6 @@ stages:
   - staging
   - deploy
 
-
-
-
 # Check python syntax
 code_quality:
   stage: test
@@ -37,6 +34,7 @@ unit_testing:
 
 deploy:
   stage: deploy
-  script: ./deploy
+  script: aws cloudformation create-stack --stack-name ec2 --template-body file://ec2.yml
+  when: manual
   only:
   - master
