@@ -4,12 +4,13 @@ stages:
   - staging
   - deploy
 
-image: chrissayon/flask_ansible:0.2
+
 
 
 # Check python syntax
 code_quality:
   stage: test
+  image: chrissayon/flask_ansible:0.2
   script:
     - cd backend
     - flake8 --max-line-length=90
@@ -18,9 +19,15 @@ code_quality:
 # Unit testing
 unit_testing:
   stage: test
+  image: chrissayon/flask_ansible:0.2
   script:
     - python3 -m pytest backend/tests
 
+# dev_server:
+#   stage: test
+#   image: registry.gitlab.com/gitlab-org/cloud-deploy/aws-base:latest
+#   script: 
+#     - 
 
 # test:
 #   stage: test
@@ -28,8 +35,8 @@ unit_testing:
 #   only:
 #   - merge_requests
 
-staging:
-  stage: staging
+deploy:
+  stage: deploy
   script: ./deploy
   only:
   - master

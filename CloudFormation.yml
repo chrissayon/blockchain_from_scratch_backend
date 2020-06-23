@@ -1,0 +1,26 @@
+---
+Resources:     
+  WebServer:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: ami-088ff0e3bde7b3fdf
+      InstanceType: t2.micro
+      KeyName: 'DevOps'
+      SecurityGroups:
+      - Ref: WebServerSecurityGroup
+
+  WebServerSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: "Enable HTTP access via port 80 locked down to the load balancer + SSH access"
+      SecurityGroupIngress:
+      - CidrIp: 0.0.0.0/0
+        FromPort: '80'
+        IpProtocol: tcp
+        ToPort: '80'
+      - CidrIp: 0.0.0.0/0
+        FromPort: '22'
+        IpProtocol: tcp
+        ToPort: '22'
+
+  # aws cloudformation create-stack --stack-name ec2 --template-body file://ec2.yml
