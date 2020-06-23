@@ -22,12 +22,12 @@ unit_testing:
 deploy_dev:
   stage: deploy
   image: registry.gitlab.com/gitlab-org/cloud-deploy/aws-base:latest
-  script: aws cloudformation create-stack --stack-name ec2 --template dev.yml
+  script: aws cloudformation deploy --stack-name dev --template--body dev.yml
 
 deploy_staging:
   stage: deploy
   image: registry.gitlab.com/gitlab-org/cloud-deploy/aws-base:latest
-  script: aws cloudformation create-stack --stack-name ec2 --template stage.yml
+  script: aws cloudformation deploy --stack-name staging --template stage.yml
   when: manual
   environment:
     name: staging
@@ -37,7 +37,7 @@ deploy_staging:
 deploy_prod:
   stage: deploy
   image: registry.gitlab.com/gitlab-org/cloud-deploy/aws-base:latest
-  script: aws cloudformation create-stack --stack-name ec2 --template prod.yml
+  script: aws cloudformation deploy --stack-name prod --template prod.yml
   when: manual
   environment:
     name: production
