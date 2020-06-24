@@ -42,7 +42,9 @@ configure_dev:
   image: geerlingguy/docker-ubuntu1804-ansible
   script:
     - cd ansible
-    - ansible-playbook -i ec2.py main.yml
+    - aws ec2 describe-instances --query "Reservations[*].Instances[*].[PublicIpAddress, Tags[?Key=='dev_server']]" --output=text | grep -v None >> inventory
+    - cat inventory
+    - ansible-playbook -i inventory main.yml
   environment:
     name: development
   when: on_success
