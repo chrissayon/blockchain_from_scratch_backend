@@ -55,18 +55,47 @@ configure_dev:
     - ansible-playbook -i inventory main.yml
   environment:
     name: development
-  when: on_success
+  rules:
+    - if: '$CI_COMMIT_BRANCH =~ /^feature/'
+      when: on_success
+    - if: '$CI_COMMIT_BRANCH == "develop"'
+      when: on_success
+
+
 
 # Deploy staging server
-deploy_staging:
+provision_staging_server:
   stage: provision_staging
   image: registry.gitlab.com/gitlab-org/cloud-deploy/aws-base:latest
-  script: aws cloudformation deploy --stack-name staging --template cloudformation/stage.yml
+  script: aws cloudformation deploy --stack-name staging --template cloudformation/staging.yml
   when: manual
   environment:
     name: staging
   only:
   - staging
+
+# Configure staging server
+configure_dev:
+  stage: configure_staging
+  image: chrissayon/flask_ansible:0.3
+  script:
+  ## Add ssh key
+    - 'which ssh-agent || ( apk add openssh-client )'
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+  ## Configure server
+    - cd ansible
+    - export ANSIBLE_HOST_KEY_CHECKING=False
+    - aws ec2 describe-instances --query "Reservations[*].Instances[*].[PublicIpAddress, Tags[?Key=='staging_server']]" --output=text | grep -v None >> inventory
+    - cat inventory
+    - ansible-playbook -i inventory main.yml
+  environment:
+    name: staging
+  when: on_success
+
+
 
 # Deploy prod server
 deploy_prod:

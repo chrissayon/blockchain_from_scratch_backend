@@ -2,7 +2,7 @@
 Mappings:
   RegionMap:
     ap-southeast-2:
-      "64" : ami-088ff0e3bde7b3fdf
+      "64" : ami-04fcc97b5f6edcd89
 
 Parameters:
   CidrBlockParameter:
@@ -11,7 +11,6 @@ Parameters:
   PublicSubnetParameter:
     Type: String
     Default: 10.0.0.0/24
-  
 
 Resources:     
   VPC:
@@ -35,7 +34,6 @@ Resources:
       Tags: 
         - Key: Name
           Value: public_subnet
-      
 
   WebServer:
     Type: AWS::EC2::Instance
@@ -46,13 +44,20 @@ Resources:
       KeyName: 'DevOps'
       SecurityGroups:
       - Ref: WebServerSecurityGroup
+      Tags: 
+        - Key: Name
+          Value: staging_server
 
   WebServerSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupDescription: "Enable HTTP access via port 80 + SSH access"
+      GroupDescription: "Port 22, 80, 5000"
       SecurityGroupIngress:
       - CidrIp: 0.0.0.0/0
+        FromPort: '80'
+        IpProtocol: tcp
+        ToPort: '80'
+      - CidrIpv6: ::/0
         FromPort: '80'
         IpProtocol: tcp
         ToPort: '80'
@@ -60,3 +65,22 @@ Resources:
         FromPort: '22'
         IpProtocol: tcp
         ToPort: '22'
+      - CidrIpv6: ::/0
+        FromPort: '22'
+        IpProtocol: tcp
+        ToPort: '22'
+      - CidrIp: 0.0.0.0/0
+        FromPort: '5000'
+        IpProtocol: tcp
+        ToPort: '5000'
+      - CidrIpv6: ::/0
+        FromPort: '5000'
+        IpProtocol: tcp
+        ToPort: '5000'
+
+Outputs:
+  PublicIp:
+    Description: Staging Server Backend Public IP
+    Value: !GetAtt WebServer.PublicIp
+    Export:
+      Name: !Sub "${AWS::StackName}-PublicIp"
