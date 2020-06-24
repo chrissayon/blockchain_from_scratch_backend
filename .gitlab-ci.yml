@@ -49,6 +49,7 @@ configure_dev:
     - chmod 700 ~/.ssh
   ## Configure server
     - cd ansible
+    - export ANSIBLE_HOST_KEY_CHECKING=False
     - aws ec2 describe-instances --query "Reservations[*].Instances[*].[PublicIpAddress, Tags[?Key=='dev_server']]" --output=text | grep -v None >> inventory
     - cat inventory
     - ansible-playbook -i inventory main.yml
