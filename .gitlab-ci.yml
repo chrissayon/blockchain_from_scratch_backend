@@ -5,8 +5,8 @@ stages:
   - configure_dev
   - provision_staging
   - configure_staging
-  - provision_deploy
-  - configure_deploy
+  - provision_prod
+  - configure_prod
 
 # Check python syntax
 code_quality:
@@ -37,7 +37,7 @@ provision_dev_server:
       when: on_success
 
 # Configure dev server
-configure_dev:
+configure_dev_server:
   stage: configure_dev
   image: chrissayon/flask_ansible:0.3
   script:
@@ -73,9 +73,10 @@ provision_staging_server:
     name: staging
   only:
   - staging
+  allow_failure: false
 
 # Configure staging server
-configure_dev:
+configure_staging_server:
   stage: configure_staging
   image: chrissayon/flask_ansible:0.3
   script:
@@ -93,13 +94,14 @@ configure_dev:
     - ansible-playbook -i inventory main.yml
   environment:
     name: staging
+  only:
+   - staging
   when: on_success
 
 
-
-# Deploy prod server
-deploy_prod:
-  stage: provision_deploy
+# Deploy production server
+provision_prod_server:
+  stage: provision_prod
   image: registry.gitlab.com/gitlab-org/cloud-deploy/aws-base:latest
   script: aws cloudformation deploy --stack-name prod --template cloudformation/prod.yml
   when: manual
@@ -107,3 +109,27 @@ deploy_prod:
     name: production
   only:
   - master
+  allow_failure: false
+
+# Configure production server
+configure_prod_server:
+  stage: configure_prod
+  image: chrissayon/flask_ansible:0.3
+  script:
+  ## Add ssh key
+    - 'which ssh-agent || ( apk add openssh-client )'
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+  ## Configure server
+    - cd ansible
+    - export ANSIBLE_HOST_KEY_CHECKING=False
+    - aws ec2 describe-instances --query "Reservations[*].Instances[*].[PublicIpAddress, Tags[?Key=='prod_server']]" --output=text | grep -v None >> inventory
+    - cat inventory
+    - ansible-playbook -i inventory main.yml
+  environment:
+    name: production
+  only:
+    - master
+  when: on_success
