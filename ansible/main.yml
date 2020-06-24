@@ -13,6 +13,7 @@
         repo: "{{ GIT_REPO }}"
         clone: yes
         dest: "{{ REPO_LOCATION }}"
+        version: "{{ BRANCH_NAME }}"
     
     - name: Install python project dependencies from requirements.txt
       pip:
@@ -20,3 +21,14 @@
         requirements: "requirements.txt" 
         virtualenv: "{{ VENV_LOCATION }}"
         virtualenv_python: python3.7
+
+    - name: Run gunicorn
+      gunicorn:
+        chdir: "{{ REPO_LOCATION }}"
+        app: 'backend.app'
+        venv: "{{ VENV_LOCATION }}"
+      environment:
+        - pubnub_publish_key: $pubnub_publish_key
+        - pubnub_subscribe_key: $pubnub_subscribe_key
+      
+    # gunicorn -b 127.0.0.1:5001 backend.app

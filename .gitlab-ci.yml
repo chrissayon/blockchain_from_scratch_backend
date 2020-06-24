@@ -10,7 +10,7 @@ code_quality:
   image: chrissayon/flask_ansible:0.2
   script:
     - cd backend
-    - flake8 --max-line-length=90 --exclude ansible/ec2.py
+    - flake8 --max-line-length=90 --exclude ansible
 
 # Unit testing
 unit_testing:
@@ -19,14 +19,28 @@ unit_testing:
   script:
     - python3 -m pytest backend/tests
 
-# Deploy dev environment
+# Deploy dev server
 deploy_dev:
   stage: deploy
   image: registry.gitlab.com/gitlab-org/cloud-deploy/aws-base:latest
   script: aws cloudformation deploy --stack-name dev --template cloudformation/dev.yml
   environment:
     name: development
+  rules:
+    - if: '($CI_COMMIT_BRANCH == /^feature/) || ($CI_COMMIT_BRANCH == "develop")'
+    when: on_success
 
+# Configure dev server
+# configure_dev:
+#   stage: deploy
+#   image: registry.gitlab.com/gitlab-org/cloud-deploy/aws-base:latest
+#   script: aws cloudformation deploy --stack-name dev --template cloudformation/dev.yml
+#   environment:
+#     name: development
+#   when: on_success
+
+
+# Deploy staging server
 deploy_staging:
   stage: deploy
   image: registry.gitlab.com/gitlab-org/cloud-deploy/aws-base:latest
@@ -35,8 +49,9 @@ deploy_staging:
   environment:
     name: staging
   only:
-  - merge_requests
+  - staging
 
+# Deploy prod server
 deploy_prod:
   stage: deploy
   image: registry.gitlab.com/gitlab-org/cloud-deploy/aws-base:latest

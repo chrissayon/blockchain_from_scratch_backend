@@ -1,5 +1,6 @@
 ---
 GIT_REPO: https://github.com/chrissayon/blockchain_from_scratch_backend
 REPO_LOCATION: /home/ubuntu/backend
-
 VENV_LOCATION: /home/ubuntu/virt_env
+
+BRANCH_NAME: feature/flask
