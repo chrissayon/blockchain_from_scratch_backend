@@ -11,7 +11,6 @@ Parameters:
   PublicSubnetParameter:
     Type: String
     Default: 10.0.0.0/24
-  
 
 Resources:     
   VPC:
@@ -35,7 +34,6 @@ Resources:
       Tags: 
         - Key: Name
           Value: public_subnet
-      
 
   WebServer:
     Type: AWS::EC2::Instance
@@ -46,6 +44,9 @@ Resources:
       KeyName: 'DevOps'
       SecurityGroups:
       - Ref: WebServerSecurityGroup
+      Tags: 
+        - Key: Name
+          Value: dev_server
 
   WebServerSecurityGroup:
     Type: AWS::EC2::SecurityGroup
@@ -56,7 +57,22 @@ Resources:
         FromPort: '80'
         IpProtocol: tcp
         ToPort: '80'
+      - CidrIpv6: ::/0
+        FromPort: '80'
+        IpProtocol: tcp
+        ToPort: '80'
       - CidrIp: 0.0.0.0/0
         FromPort: '22'
         IpProtocol: tcp
         ToPort: '22'
+      - CidrIpv6: ::/0
+        FromPort: '22'
+        IpProtocol: tcp
+        ToPort: '22'
+
+Outputs:
+  PublicIp:
+    Description: Dev Server Backend Public IP
+    Value: !GetAtt WebServer.PublicIp
+    Export:
+      Name: !Sub "${AWS::StackName}-PublicIp"
