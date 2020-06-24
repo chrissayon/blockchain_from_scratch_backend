@@ -94,7 +94,7 @@ configure_staging_server:
   environment:
     name: staging
   when: on_success
-
+  allow_failure: false
 
 
 # Deploy prod server
