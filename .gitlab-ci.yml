@@ -94,6 +94,8 @@ configure_staging_server:
     - ansible-playbook -i inventory main.yml
   environment:
     name: staging
+  only:
+   - staging
   when: on_success
 
 
@@ -128,4 +130,6 @@ configure_prod_server:
     - ansible-playbook -i inventory main.yml
   environment:
     name: production
+  only:
+    - production
   when: on_success
