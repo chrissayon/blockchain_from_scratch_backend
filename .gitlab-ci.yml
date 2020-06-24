@@ -33,14 +33,15 @@ deploy_dev:
       when: on_success
 
 # Configure dev server
-# configure_dev:
-#   stage: deploy
-#   image: registry.gitlab.com/gitlab-org/cloud-deploy/aws-base:latest
-#   script: aws cloudformation deploy --stack-name dev --template cloudformation/dev.yml
-#   environment:
-#     name: development
-#   when: on_success
-
+configure_dev:
+  stage: deploy
+  image: geerlingguy/docker-ubuntu1804-ansible
+  script:
+    - cd ansible
+    - ansible-playbook -i ec2.py main.yml
+  environment:
+    name: development
+  when: on_success
 
 # Deploy staging server
 deploy_staging:
