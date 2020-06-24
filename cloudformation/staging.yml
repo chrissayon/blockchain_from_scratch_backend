@@ -11,6 +11,12 @@ Parameters:
   PublicSubnetParameter:
     Type: String
     Default: 10.0.0.0/24
+  EC2TagParameter:
+    Type: String
+    Default: staging_server
+  OutputPublicIPParameter:
+    Type: String
+    Default: "Staging Server Backend Public IP"
 
 Resources:     
   VPC:
@@ -46,7 +52,7 @@ Resources:
       - Ref: WebServerSecurityGroup
       Tags: 
         - Key: Name
-          Value: staging_server
+          Value: !Ref EC2TagParameter
 
   WebServerSecurityGroup:
     Type: AWS::EC2::SecurityGroup
@@ -80,7 +86,7 @@ Resources:
 
 Outputs:
   PublicIp:
-    Description: Staging Server Backend Public IP
+    Description: !Ref OutputPublicIPParameter
     Value: !GetAtt WebServer.PublicIp
     Export:
       Name: !Sub "${AWS::StackName}-PublicIp"
