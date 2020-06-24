@@ -1,0 +1,6 @@
+FROM chrissayon/flask_ansible:0.2
+
+COPY . .
+
+# docker build . -t bitcoin_server
+# docker run -p 10000:5000 -it --entrypoint /bin/sh bitcoin_serve

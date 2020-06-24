@@ -41,6 +41,12 @@ class Block:
     def __eq__(self, other):
         return self.__dict__ == other.__dict__
 
+    def to_json(self):
+        """
+        Serialize the blockchain into a list of blocks
+        """
+        return self.__dict__
+
     @staticmethod
     def mine_block(last_block, data):
         """
@@ -73,6 +79,13 @@ class Block:
         #     GENESIS_DATA['data']
         # )
         return Block(**GENESIS_DATA)
+
+    @staticmethod
+    def from_json(block_json):
+        """
+        Deserialize a block's json representation back into a block instance.
+        """
+        return Block(**block_json)
 
     @staticmethod
     def adjust_difficulty(last_block, new_timestamp):

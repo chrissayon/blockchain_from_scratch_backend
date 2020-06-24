@@ -12,7 +12,8 @@ RUN pip install --upgrade pip
 RUN pip install wheel
 
 RUN apk update 
-RUN apk add gcc musl-dev libffi-dev openssl-dev
+RUN apk add gcc musl-dev libc-dev libffi-dev openssl-dev g++ make 
+# RUN pip install cython
 # RUN apk add --no-cache --virtual .build-deps gcc musl-dev \
 #     && pip install cython \
 #     && apk del .build-deps gcc musl-dev
