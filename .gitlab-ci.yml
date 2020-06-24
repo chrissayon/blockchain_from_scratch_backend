@@ -1,0 +1,109 @@
+stages:
+  # - build # Not used for python code
+  - test
+  - provision_dev
+  - configure_dev
+  - provision_staging
+  - configure_staging
+  - provision_deploy
+  - configure_deploy
+
+# Check python syntax
+code_quality:
+  stage: test
+  image: chrissayon/flask_ansible:0.3
+  script:
+    - cd backend
+    - flake8 --max-line-length=90 --exclude ansible
+
+# Unit testing
+unit_testing:
+  stage: test
+  image: chrissayon/flask_ansible:0.3
+  script:
+    - python3 -m pytest backend/tests
+
+# Deploy dev server
+provision_dev_server:
+  stage: provision_dev
+  image: registry.gitlab.com/gitlab-org/cloud-deploy/aws-base:latest
+  script: aws cloudformation deploy --stack-name dev --template cloudformation/dev.yml
+  environment:
+    name: development
+  rules:
+    - if: '$CI_COMMIT_BRANCH =~ /^feature/'
+      when: on_success
+    - if: '$CI_COMMIT_BRANCH == "develop"'
+      when: on_success
+
+# Configure dev server
+configure_dev:
+  stage: configure_dev
+  image: chrissayon/flask_ansible:0.3
+  script:
+  ## Add ssh key
+    - 'which ssh-agent || ( apk add openssh-client )'
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+  ## Configure server
+    - cd ansible
+    - export ANSIBLE_HOST_KEY_CHECKING=False
+    - aws ec2 describe-instances --query "Reservations[*].Instances[*].[PublicIpAddress, Tags[?Key=='dev_server']]" --output=text | grep -v None >> inventory
+    - cat inventory
+    - ansible-playbook -i inventory main.yml
+  environment:
+    name: development
+  rules:
+    - if: '$CI_COMMIT_BRANCH =~ /^feature/'
+      when: on_success
+    - if: '$CI_COMMIT_BRANCH == "develop"'
+      when: on_success
+
+
+
+# Deploy staging server
+provision_staging_server:
+  stage: provision_staging
+  image: registry.gitlab.com/gitlab-org/cloud-deploy/aws-base:latest
+  script: aws cloudformation deploy --stack-name staging --template cloudformation/staging.yml
+  when: manual
+  environment:
+    name: staging
+  only:
+  - staging
+
+# Configure staging server
+configure_dev:
+  stage: configure_staging
+  image: chrissayon/flask_ansible:0.3
+  script:
+  ## Add ssh key
+    - 'which ssh-agent || ( apk add openssh-client )'
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+  ## Configure server
+    - cd ansible
+    - export ANSIBLE_HOST_KEY_CHECKING=False
+    - aws ec2 describe-instances --query "Reservations[*].Instances[*].[PublicIpAddress, Tags[?Key=='staging_server']]" --output=text | grep -v None >> inventory
+    - cat inventory
+    - ansible-playbook -i inventory main.yml
+  environment:
+    name: staging
+  when: on_success
+
+
+
+# Deploy prod server
+deploy_prod:
+  stage: provision_deploy
+  image: registry.gitlab.com/gitlab-org/cloud-deploy/aws-base:latest
+  script: aws cloudformation deploy --stack-name prod --template cloudformation/prod.yml
+  when: manual
+  environment:
+    name: production
+  only:
+  - master

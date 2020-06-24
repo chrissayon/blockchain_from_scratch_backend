@@ -1,0 +1,62 @@
+---
+Mappings:
+  RegionMap:
+    ap-southeast-2:
+      "64" : ami-088ff0e3bde7b3fdf
+
+Parameters:
+  CidrBlockParameter:
+    Type: String
+    Default: 10.0.0.0/16
+  PublicSubnetParameter:
+    Type: String
+    Default: 10.0.0.0/24
+  
+
+Resources:     
+  VPC:
+    Type: AWS::EC2::VPC
+    Properties: 
+      CidrBlock: !Ref CidrBlockParameter
+      EnableDnsHostnames: True
+      EnableDnsSupport: True
+      InstanceTenancy: default
+      Tags: 
+        - Key: Name
+          Value: BlockChainVPC
+
+  PublicSubnet:
+    Type: AWS::EC2::Subnet
+    Properties: 
+      VpcId: !Ref VPC
+      CidrBlock: !Ref PublicSubnetParameter
+      AvailabilityZone: "ap-southeast-2a"
+      MapPublicIpOnLaunch: true
+      Tags: 
+        - Key: Name
+          Value: public_subnet
+      
+
+  WebServer:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: !FindInMap [ RegionMap, !Ref "AWS::Region", 64 ]
+      # ImageId: ami-088ff0e3bde7b3fdf
+      InstanceType: t2.micro
+      KeyName: 'DevOps'
+      SecurityGroups:
+      - Ref: WebServerSecurityGroup
+
+  WebServerSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: "Enable HTTP access via port 80 + SSH access"
+      SecurityGroupIngress:
+      - CidrIp: 0.0.0.0/0
+        FromPort: '80'
+        IpProtocol: tcp
+        ToPort: '80'
+      - CidrIp: 0.0.0.0/0
+        FromPort: '22'
+        IpProtocol: tcp
+        ToPort: '22'
