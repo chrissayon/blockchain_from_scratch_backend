@@ -2,7 +2,7 @@
 Mappings:
   RegionMap:
     ap-southeast-2:
-      "64" : ami-088ff0e3bde7b3fdf
+      "64" : ami-04fcc97b5f6edcd89
 
 Parameters:
   CidrBlockParameter:

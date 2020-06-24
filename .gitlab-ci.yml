@@ -10,7 +10,7 @@ code_quality:
   image: chrissayon/flask_ansible:0.2
   script:
     - cd backend
-    - flake8 --max-line-length=90
+    - flake8 --max-line-length=90 --exclude ansible/ec2.py
 
 # Unit testing
 unit_testing:
