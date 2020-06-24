@@ -37,7 +37,7 @@ provision_dev_server:
       when: on_success
 
 # Configure dev server
-configure_dev:
+configure_dev_server:
   stage: configure_dev
   image: chrissayon/flask_ansible:0.3
   script:
@@ -75,7 +75,7 @@ provision_staging_server:
   - staging
 
 # Configure staging server
-configure_dev:
+configure_staging_server:
   stage: configure_staging
   image: chrissayon/flask_ansible:0.3
   script:
