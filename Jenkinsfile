@@ -9,15 +9,16 @@ void setBuildStatus(String message, String state) {
 }
 
 pipeline {
-   agent { docker { image 'chrissayon/flask_ansible:1.0' } }
-   // agent any
+   agent { docker { image 'chrissayon/flask_ansible:0.2' } }
+   // agent any yes
 
    stages {
       stage('Test') {
          steps {
-            dir('frontend') {
-               sh "flake8"
+            dir('backend') {
+               sh "flake8 --max-line-length=90"
             }
+            sh "python3 -m pytest backend/tests"
          }
       }  
    }

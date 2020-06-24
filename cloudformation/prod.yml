@@ -1,0 +1,92 @@
+---
+Mappings:
+  RegionMap:
+    ap-southeast-2:
+      "64" : ami-04fcc97b5f6edcd89
+
+Parameters:
+  CidrBlockParameter:
+    Type: String
+    Default: 10.0.0.0/16
+  PublicSubnetParameter:
+    Type: String
+    Default: 10.0.0.0/24
+  EC2TagParameter:
+    Type: String
+    Default: prod_server
+  OutputPublicIPParameter:
+    Type: String
+    Default: "Production Server Backend Public IP"
+
+Resources:     
+  VPC:
+    Type: AWS::EC2::VPC
+    Properties: 
+      CidrBlock: !Ref CidrBlockParameter
+      EnableDnsHostnames: True
+      EnableDnsSupport: True
+      InstanceTenancy: default
+      Tags: 
+        - Key: Name
+          Value: BlockChainVPC
+
+  PublicSubnet:
+    Type: AWS::EC2::Subnet
+    Properties: 
+      VpcId: !Ref VPC
+      CidrBlock: !Ref PublicSubnetParameter
+      AvailabilityZone: "ap-southeast-2a"
+      MapPublicIpOnLaunch: true
+      Tags: 
+        - Key: Name
+          Value: public_subnet
+
+  WebServer:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: !FindInMap [ RegionMap, !Ref "AWS::Region", 64 ]
+      # ImageId: ami-088ff0e3bde7b3fdf
+      InstanceType: t2.micro
+      KeyName: 'DevOps'
+      SecurityGroups:
+      - Ref: WebServerSecurityGroup
+      Tags: 
+        - Key: Name
+          Value: !Ref EC2TagParameter
+
+  WebServerSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: "Port 22, 80, 5000"
+      SecurityGroupIngress:
+      - CidrIp: 0.0.0.0/0
+        FromPort: '80'
+        IpProtocol: tcp
+        ToPort: '80'
+      - CidrIpv6: ::/0
+        FromPort: '80'
+        IpProtocol: tcp
+        ToPort: '80'
+      - CidrIp: 0.0.0.0/0
+        FromPort: '22'
+        IpProtocol: tcp
+        ToPort: '22'
+      - CidrIpv6: ::/0
+        FromPort: '22'
+        IpProtocol: tcp
+        ToPort: '22'
+      - CidrIp: 0.0.0.0/0
+        FromPort: '5000'
+        IpProtocol: tcp
+        ToPort: '5000'
+      - CidrIpv6: ::/0
+        FromPort: '5000'
+        IpProtocol: tcp
+        ToPort: '5000'
+
+Outputs:
+  PublicIp:
+    Description: !Ref OutputPublicIPParameter
+    Value: !GetAtt WebServer.PublicIp
+    Export:
+      Name: !Sub "${AWS::StackName}-PublicIp"
