@@ -1,8 +1,12 @@
 stages:
   # - build # Not used for python code
   - test
-  - staging
-  - deploy
+  - provision_dev
+  - configure_dev
+  - provision_staging
+  - configure_staging
+  - provision_deploy
+  - configure_deploy
 
 # Check python syntax
 code_quality:
@@ -20,8 +24,8 @@ unit_testing:
     - python3 -m pytest backend/tests
 
 # Deploy dev server
-deploy_dev:
-  stage: deploy
+provision_dev_server:
+  stage: provision_dev
   image: registry.gitlab.com/gitlab-org/cloud-deploy/aws-base:latest
   script: aws cloudformation deploy --stack-name dev --template cloudformation/dev.yml
   environment:
@@ -34,7 +38,7 @@ deploy_dev:
 
 # Configure dev server
 configure_dev:
-  stage: deploy
+  stage: configure_dev
   image: geerlingguy/docker-ubuntu1804-ansible
   script:
     - cd ansible
@@ -45,7 +49,7 @@ configure_dev:
 
 # Deploy staging server
 deploy_staging:
-  stage: deploy
+  stage: provision_staging
   image: registry.gitlab.com/gitlab-org/cloud-deploy/aws-base:latest
   script: aws cloudformation deploy --stack-name staging --template cloudformation/stage.yml
   when: manual
@@ -56,7 +60,7 @@ deploy_staging:
 
 # Deploy prod server
 deploy_prod:
-  stage: deploy
+  stage: provision_deploy
   image: registry.gitlab.com/gitlab-org/cloud-deploy/aws-base:latest
   script: aws cloudformation deploy --stack-name prod --template cloudformation/prod.yml
   when: manual
