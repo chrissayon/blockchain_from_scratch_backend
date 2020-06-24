@@ -27,8 +27,10 @@ deploy_dev:
   environment:
     name: development
   rules:
-    - if: '($CI_COMMIT_BRANCH == /^feature/) || ($CI_COMMIT_BRANCH == "develop")'
-    when: on_success
+    - if: '$CI_COMMIT_BRANCH =~ /^feature/'
+      when: on_success
+    - if: '$CI_COMMIT_BRANCH == "develop"'
+      when: on_success
 
 # Configure dev server
 # configure_dev:
