@@ -14,9 +14,6 @@ Parameters:
   EC2TagParameter:
     Type: String
     Default: prod_server
-  OutputPublicIPParameter:
-    Type: String
-    Default: ProductionBackendPublicIP
 
 Resources:     
   VPC:
@@ -86,7 +83,7 @@ Resources:
 
 Outputs:
   PublicIp:
-    Description: !Ref OutputPublicIPParameter
+    Description: Public IP Output
     Value: !GetAtt WebServer.PublicIp
     Export:
       Name: !Sub "${AWS::StackName}-PublicIp"
