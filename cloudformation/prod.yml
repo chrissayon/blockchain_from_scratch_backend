@@ -16,7 +16,7 @@ Parameters:
     Default: prod_server
   OutputPublicIPParameter:
     Type: String
-    Default: "Production Server Backend Public IP"
+    Default: ProductionBackendPublicIP
 
 Resources:     
   VPC:

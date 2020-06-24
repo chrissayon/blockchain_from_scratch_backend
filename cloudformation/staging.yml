@@ -16,7 +16,7 @@ Parameters:
     Default: staging_server
   OutputPublicIPParameter:
     Type: String
-    Default: "Staging Server Backend Public IP"
+    Default: StagingBackendPublicIP
 
 Resources:     
   VPC:

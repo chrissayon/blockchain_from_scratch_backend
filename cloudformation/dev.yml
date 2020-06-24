@@ -16,7 +16,7 @@ Parameters:
     Default: dev_server
   OutputPublicIPParameter:
     Type: String
-    Default: "Dev Server Backend Public IP"
+    Default: DevelopmentBackendPublicIP
 
 Resources:     
   VPC:
