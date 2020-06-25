@@ -1,6 +1,7 @@
-FROM chrissayon/flask_ansible:0.2
+FROM chrissayon/flask_ansible:0.3
 
 COPY . .
+RUN gunicorn -b 127.0.0.1:5001 backend.app.app
 
 # docker build . -t bitcoin_server
 # docker run -p 10000:5000 -it --entrypoint /bin/sh bitcoin_serve
