@@ -20,7 +20,7 @@ click-help-colors==0.8
 colorama==0.4.3
 cookiecutter==1.7.2
 coverage==5.0
-cryptography==2.9.2
+cryptography==3.2
 distro==1.5.0
 docutils==0.15.2
 fabric==2.5.0
